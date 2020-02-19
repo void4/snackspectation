@@ -61,7 +61,7 @@ mrc = [[match_rating_codex(w[0]), w[0], w[1]] for w in firstsyls]
 def a2():
     a = choice(words)
     sa = h_en.syllables(a)
-    if len(sa) < 2:
+    if len(sa) < 3:#<2
         return
 
     fmrc = match_rating_codex(sa[0])
@@ -79,5 +79,5 @@ def a2():
     first = choice(rh[:len(rh)//300])
     print(first[1] + "".join(sa[1:]), "=", first[2], "+", a)
 
-for i in range(100):
+for i in range(1000):
     a2()
