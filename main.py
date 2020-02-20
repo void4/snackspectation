@@ -1,4 +1,5 @@
-from random import choice
+from random import choice, randint
+import re
 
 from hyphen import Hyphenator
 from jellyfish import soundex, metaphone, match_rating_codex, match_rating_comparison, damerau_levenshtein_distance
@@ -58,13 +59,10 @@ def a1():
 firstsyls = [[h_en.syllables(w)[0], w] for w in words if len(h_en.syllables(w)) == 1]#>0
 mrc = [[match_rating_codex(w[0]), w[0], w[1]] for w in firstsyls]
 #print(mrc)
-def a2():
-    a = choice(words)
-    sa = h_en.syllables(a)
-    if len(sa) < 3:#<2
-        return
 
-    fmrc = match_rating_codex(sa[0])
+def similar_sounding(syl):
+
+    fmrc = match_rating_codex(syl)
 
     #allw = [[match_rating_comparison(sa[0], c[0]), c[1]] for c in mrc]
     #allw = [c for c in allw if c[0]]
@@ -74,10 +72,66 @@ def a2():
     #print(rh)
     if len(rh) == 0:
         return
+
+    return choice(rh[:len(rh)//100])
+
+def text2words(text):
+    return re.findall(r"\w+|[^\w\s]", text, re.UNICODE)
+
+def a2():
+    a = choice(words)
+    sa = h_en.syllables(a)
+    if len(sa) < 3:#<2
+        return
+
     #choice(allw)[1]
     #print(len(rh))
-    first = choice(rh[:len(rh)//300])
+    first = similar_sounding(sa[0])
     print(first[1] + "".join(sa[1:]), "=", first[2], "+", a)
 
-for i in range(1000):
-    a2()
+def sentence(text):
+    words = text2words(text)
+    result = ""
+    for w in words:
+        if len(w) > 1:
+            sw = h_en.syllables(w)
+            if len(sw) < 1:
+                result += " " + w
+            else:
+                first = similar_sounding(sw[0])
+                result += " " + first[1] + "".join(sw[1:])
+        else:
+            result += w +" "
+
+    result = result.replace("  ", " ")[1:]
+
+    print(result)
+    return result
+
+def sentence2(text):
+    words = text2words(text)
+    result = ""
+    for w in words:
+        if len(w) > 1:
+            sw = h_en.syllables(w)
+            if len(sw) < 2:
+                result += " " + w
+            else:
+                index = randint(0, len(sw)-1)
+                first = similar_sounding(sw[index])[1]
+                sw[index] = first
+                result += " " + "".join(sw)
+        else:
+            result += w +" "
+
+    result = result.replace("  ", " ")[1:]
+
+    print(result)
+    return result
+
+#for i in range(1000):
+#    a2()
+import sys
+current = sys.argv[1]
+for i in range(250):
+    current = sentence2(current)
