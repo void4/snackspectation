@@ -129,9 +129,12 @@ def sentence2(text):
     print(result)
     return result
 
-#for i in range(1000):
-#    a2()
+for i in range(1000):
+    a2()
+
+"""
 import sys
 current = sys.argv[1]
 for i in range(250):
     current = sentence2(current)
+"""
